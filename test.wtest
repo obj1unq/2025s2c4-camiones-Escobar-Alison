@@ -1,0 +1,21 @@
+import camion.*
+import cosas.*
+
+describe "Pruebas de carga y descarga del camión" {
+
+	test "Cargar Bumblebee y luego Knight Rider" {
+		camion.cosas.clear()
+		camion.cargar(bumblebee)
+		camion.cargar(knightRider)
+		assert.equals(#{bumblebee, knightRider}, camion.cosas)
+	}
+
+	test "Descargar Bumblebee deja solo KnightRider" {
+		camion.cosas.clear()
+		camion.cargar(bumblebee)
+		camion.cargar(knightRider)
+		camion.descargar(bumblebee)
+		assert.equals(#{knightRider}, camion.cosas)
+	}
+
+}

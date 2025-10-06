@@ -10,9 +10,15 @@ object knightRider {
 }
 
 object bumblebee {
-	var estaTransformadoEnRobot = true
+	var estaTransformadoEnRobot = true //necesita un setter
+
+	method estaTransformadoEnRobot(_estaTransformadoEnRobot){
+		estaTransformadoEnRobot = _estaTransformadoEnRobot
+	}
+
 
 	method peso() = 800 
+
 	method nivelPeligrosidad() = 
 		if (estaTransformadoEnRobot){
 			30
@@ -28,8 +34,11 @@ object bumblebee {
 }
 
 object paqueteDeLadrillos {
-	var cantidad = 0
-	//se me indica que la cantidad puede variar
+	var cantidad = 0 //se me indica que la cantidad puede variar, así que necesita un setter
+
+	method cantidad(_cantidad) {
+		cantidad = _cantidad
+	}
 
 	method peso() = 2 * cantidad
 
@@ -39,11 +48,11 @@ object paqueteDeLadrillos {
 		if (cantidad <= 100){
 			1
 		} else {
-			self.bultoSiEsMenorA300()
+			self.bultoSiEsta101aMayor()
 		}
 
-	method bultoSiEsMenorA300() =
-		if (cantidad <= 300){
+	method bultoSiEsta101aMayor() =
+		if (cantidad >= 101 && cantidad <= 300){
 			2
 		} else { 3 }
 
@@ -68,7 +77,11 @@ object arenaAGranel {
 }
 
 object bateriaAntiaerea {
-	var tieneMisilesCargados = true
+	var tieneMisilesCargados = true //necesita un setter
+
+    method tieneMisilesCargados(_tieneMisilesCargados) {
+	  tieneMisilesCargados = _tieneMisilesCargados
+	}
 
 	method peso() = 
 		if (tieneMisilesCargados){
@@ -110,34 +123,44 @@ object resuidosRadioactivos {
 object contenedor {
   const pesoVacio = 100
   const cosas = []
+  const bultoDeContenedor = 1
+
+  method cargar(unaCosa) {
+	cosas.add(unaCosa)
+  }
 
   method peso() =  pesoVacio + self.pesoDeContenido()
 
   method pesoDeContenido() = cosas.sum { cosa => cosa.peso()}
 
+  method nivelPeligrosidad() = self.elMasPeligroso()
+
   method elMasPeligroso() = 
     if (cosas.isEmpty()){ 
 	    0
-	} else { cosas.max { cosa => cosa.nivelPeligrosidad()} }
+	} else { (cosas.max { cosa => cosa.nivelPeligrosidad()}).nivelPeligrosidad() }
 
   method aplicarAccidente(){
 		cosas.map{ elemento => elemento.aplicarAccidente() }
   }
+
+  method bulto() = cosas.sum({ cosa => cosa.bulto() }) + bultoDeContenedor
 }
 
 object embalajeDeSeguridad {
-  var cosa = null
+  var cosaEnvuelta = null
+  const bultoDeEmbalaje = 2
 
-  method cosa(_cosa) {
-    cosa = _cosa
+  method cosaEnvuelta(_cosaEnvuelta) {
+    cosaEnvuelta = _cosaEnvuelta
   }
 
-  method peso() = cosa.peso()
+  method peso() = cosaEnvuelta.peso()
 
-  method peligrosidad() = cosa.peligrosidad() / 2
+  method nivelPeligrosidad() = cosaEnvuelta.nivelPeligrosidad() / 2
 
   method aplicarAccidente(){
-  
   }
 
+  method bulto() = bultoDeEmbalaje
 }

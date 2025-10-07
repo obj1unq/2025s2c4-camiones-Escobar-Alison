@@ -304,3 +304,104 @@ describe "Pruebas de total bultos" {
     assert.equals(4, camion.totalBultos())
   }
 }
+
+
+describe "Pruebas de accidentes" {
+	test "Caso 1"{
+	contenedor.cargar(knightRider)
+
+    bumblebee.estaTransformadoEnRobot(false)
+    contenedor.cargar(bumblebee)
+    
+	camion.cargar(contenedor)
+
+    resuidosRadioactivos.peso(15)
+    embalajeDeSeguridad.cosaEnvuelta(resuidosRadioactivos)
+    camion.cargar(embalajeDeSeguridad)
+
+    arenaAGranel.peso(50)
+    camion.cargar(arenaAGranel)
+
+    paqueteDeLadrillos.cantidad(100)
+    camion.cargar(paqueteDeLadrillos)
+
+    bateriaAntiaerea.tieneMisilesCargados(true)
+    camion.cargar(bateriaAntiaerea)
+
+    camion.accidente()
+
+    assert.that(bumblebee.estaTransformadoEnRobot())
+    assert.equals(30, resuidosRadioactivos.peso())
+    assert.equals(70, arenaAGranel.peso())
+    assert.equals(88, paqueteDeLadrillos.cantidad())
+    assert.notThat(bateriaAntiaerea.tieneMisilesCargados())
+	}
+  test "Caso 2" {
+    bumblebee.estaTransformadoEnRobot(true)
+    camion.cargar(bumblebee)
+
+    resuidosRadioactivos.peso(30)
+    camion.cargar(resuidosRadioactivos)
+
+    paqueteDeLadrillos.cantidad(10)
+    camion.cargar(paqueteDeLadrillos)
+
+    bateriaAntiaerea.tieneMisilesCargados(false)
+    camion.cargar(bateriaAntiaerea)
+
+    camion.accidente()
+
+    assert.notThat(bumblebee.estaTransformadoEnRobot())
+    assert.equals(45, resuidosRadioactivos.peso())
+    assert.equals(0, paqueteDeLadrillos.cantidad())
+    assert.notThat(bateriaAntiaerea.tieneMisilesCargados())
+  }
+}
+
+describe "Pruebas de transporte" {
+  method initialize(){
+    almacen.cargar(knightRider)
+    almacen.cargar(resuidosRadioactivos)
+
+    bumblebee.estaTransformadoEnRobot(false)
+    camion.cargar(bumblebee)
+
+    arenaAGranel.peso(50)
+    camion.cargar(arenaAGranel)
+  }
+  test "Transporte por ruta 9 exitoso" {
+    camion.transportar(almacen, ruta9)
+
+    assert.equals([], camion.cosas())
+
+    assert.equals(
+      [knightRider, resuidosRadioactivos, bumblebee, arenaAGranel],
+      almacen.stock()
+    )
+  }
+  
+  test "Ruta 9 fallido por peligrosidad" {
+	bumblebee.estaTransformadoEnRobot(true)
+
+	assert.throwsExceptionWithMessage(
+		"No se puede ir, el camino no es el adecuado para circular"
+		, {camion.transportar(almacen, ruta9)}
+	)
+
+	assert.equals([knightRider, resuidosRadioactivos], almacen.stock())
+	assert.equals([bumblebee, arenaAGranel], camion.cosas())
+  }
+  test "Ruta 9 fallido por exceso de peso"{
+	arenaAGranel.peso(2000)
+
+	assert.throwsExceptionWithMessage(
+		"No se puede ir, el camino no es el adecuado para circular"
+		, {camion.transportar(almacen, ruta9)}
+	)
+
+	assert.equals([knightRider, resuidosRadioactivos], almacen.stock())
+	assert.equals([bumblebee, arenaAGranel], camion.cosas())
+  }
+}
+
+

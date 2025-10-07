@@ -10,11 +10,8 @@ object knightRider {
 }
 
 object bumblebee {
-	var estaTransformadoEnRobot = true //necesita un setter
-
-	method estaTransformadoEnRobot(_estaTransformadoEnRobot){
-		estaTransformadoEnRobot = _estaTransformadoEnRobot
-	}
+	var property estaTransformadoEnRobot = true 
+	//necesita un setter, y un getter por el test de accidente
 
 
 	method peso() = 800 
@@ -34,11 +31,8 @@ object bumblebee {
 }
 
 object paqueteDeLadrillos {
-	var cantidad = 0 //se me indica que la cantidad puede variar, así que necesita un setter
-
-	method cantidad(_cantidad) {
-		cantidad = _cantidad
-	}
+	var property cantidad = 0 
+	//se me indica que la cantidad puede variar, así que necesita un setter. También un getter por el test de accidente
 
 	method peso() = 2 * cantidad
 
@@ -77,11 +71,8 @@ object arenaAGranel {
 }
 
 object bateriaAntiaerea {
-	var tieneMisilesCargados = true //necesita un setter
-
-    method tieneMisilesCargados(_tieneMisilesCargados) {
-	  tieneMisilesCargados = _tieneMisilesCargados
-	}
+	var property tieneMisilesCargados = true 
+	//necesita un setter, y un getter por el test de accidente
 
 	method peso() = 
 		if (tieneMisilesCargados){
@@ -141,7 +132,7 @@ object contenedor {
 	} else { (cosas.max { cosa => cosa.nivelPeligrosidad()}).nivelPeligrosidad() }
 
   method aplicarAccidente(){
-		cosas.map{ elemento => elemento.aplicarAccidente() }
+		cosas.forEach { elemento => elemento.aplicarAccidente() }
   }
 
   method bulto() = cosas.sum({ cosa => cosa.bulto() }) + bultoDeContenedor

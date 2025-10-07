@@ -7,15 +7,25 @@ object camion {
 	
 
 	method cargar(unaCosa) {
-		if (self.contengoA(unaCosa)) 
-			self.error("Ya está " + unaCosa + " en el camión")
-	    else { cosas.add(unaCosa) }
+		self.validarContenidoParaCargar(unaCosa)
+		cosas.add(unaCosa)
+	}
+
+    method validarContenidoParaCargar(unaCosa){
+			if (self.contengoA(unaCosa)) {
+				self.error("Ya está " + unaCosa + " en el camión")
+			}
 	}
 
 	method descargar(unaCosa) {
-	    if (not self.contengoA(unaCosa)) 
+	    self.validarContenidoParaDescargar(unaCosa)
+	    cosas.remove(unaCosa) 
+	}
+
+	method validarContenidoParaDescargar(unaCosa) {
+	  if (not self.contengoA(unaCosa)) {
 			self.error("No está " + unaCosa + " en el camión")
-	    else { cosas.remove(unaCosa) }
+	  }
 	}
 
 	method contengoA(unaCosa) = cosas.contains(unaCosa)
@@ -49,22 +59,36 @@ object camion {
 	method totalBultos() = cosas.sum({cosa => cosa.bulto()})
 
 	method accidente(){
-		 cosas.map{ elemento => elemento.aplicarAccidente() }
+		 cosas.forEach { elemento => elemento.aplicarAccidente() }
 	}
-
+	
 	method transportar(destino, camino){
-		if (not self.puedeCircularEnRuta(camino))
+		self.validarCirculacionEnRuta(camino)
+		cosas.forEach { cosa => destino.cargar(cosa) }	    
+		cosas.clear()
+	}
+	
+	method validarCirculacionEnRuta(camino) {
+	    if (not camino.puedeCircular(self)){
 			self.error("No se puede ir, el camino no es el adecuado para circular")
-		else{ almacen.stock().addAll(cosas)
-			      cosas.clear()
-	    }
+		}
 	}
 }
 
-object ruta {
-  var property nivelPeligrosidadPermitido = 0
+object ruta9 {
+  const nivelPeligrosidadPermitido = 20
+  
+  method puedeCircular(camion) = camion.puedeCircularEnRuta(nivelPeligrosidadPermitido)
+
 }
+
 
 object almacen {
-  var property stock = []
+  const stock = []
+
+  method stock() = stock
+
+  method cargar(unaCosa) {
+	stock.add(unaCosa)
+  }
 }
